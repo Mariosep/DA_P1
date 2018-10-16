@@ -3,6 +3,8 @@
 //#define PRINT_DEFENSE_STRATEGY 1    // generate map images
 
 // #######################################
+#include <map> 
+#include <iostream>
 
 #define BUILDING_DEF_STRATEGY_LIB 1
 #include "../simulador/Asedio.h"
@@ -16,19 +18,25 @@
 RAND_TYPE SimpleRandomGenerator::a;
 #endif
 
+using namespace std;
 using namespace Asedio;
-
-
-void inicializaValues(float** &values, int fil, int col){
-    values = new float*[fil];
-    for (int i = 0; i < col; ++i)
-      values[i] = new float[col];
-}
 
 float cellValue(int row, int col, bool** freeCells, int nCellsWidth, int nCellsHeight
 	, float mapWidth, float mapHeight, List<Object*> obstacles, List<Defense*> defenses) {
-	return 0; // implemente aqui la función que asigna valores a las celdas
+	return col; // implemente aqui la función que asigna valores a las celdas
 }
+
+void allCellValues(map<int,float>& values, bool** freeCells, int nCellsWidth, int nCellsHeight
+  , float mapWidth, float mapHeight, List<Object*> obstacles, List<Defense*> defenses) {
+    int valoracion = 0;
+    //for (int i = 0; i < nCellsHeight; ++i){
+      for (int j = 0; j < nCellsWidth; ++j){
+        valoracion = cellValue(0, j, freeCells, nCellsWidth, nCellsHeight, mapWidth, mapHeight, obstacles, defenses);
+        values.insert(make_pair(j, valoracion));
+      }
+   // }
+}
+
 
 /*void ordenaCandidatos(float** values){
 
@@ -48,16 +56,18 @@ void DEF_LIB_EXPORTED placeDefenses(bool** freeCells, int nCellsWidth, int nCell
     float cellWidth = mapWidth / nCellsWidth;
     float cellHeight = mapHeight / nCellsHeight; 
 
-    // Inicializa la matriz de valores
-    float** values;
-    inicializaValues(&values, nCellsHeight, nCellsWidth);
+    // Define la matriz de valores
+    map<int, float> values;
 
     // Valora cada celda del mapa
-    for (int i = 0; i < nCellsWidth; ++i)
-      for (int j = 0; j < cellHeight; ++j)
-          values[i][j] = cellValue(i, j, freeCells, nCellsWidth, nCellsHeight, mapWidth, mapHeight, obstacles, defenses);
+    allCellValues(values, freeCells, nCellsWidth, nCellsHeight, mapWidth, mapHeight, obstacles, defenses);
     
-
+    map<int, float>::iterator p  = values.begin();
+    p++;
+    cout<<"\n\n\n\n\n\n";
+    cout<<p->second<<endl;
+    
+/*
     int maxAttemps = 1000;
     List<Defense*>::iterator currentDefense = defenses.begin();
     while(currentDefense != defenses.end() && maxAttemps > 0) {
@@ -88,5 +98,5 @@ void DEF_LIB_EXPORTED placeDefenses(bool** freeCells, int nCellsWidth, int nCell
 	delete [] cellValues;
 	cellValues = NULL;
 
-#endif
+#endif*/
 }
